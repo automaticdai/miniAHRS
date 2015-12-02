@@ -1,18 +1,13 @@
-/* main.c file
-编写者：lisn3188
-网址：www.chiplab7.com
-作者E-mail：lisn3188@163.com
-编译环境：MDK-Lite  Version: 4.23
-初版时间: 2012-05-05
-测试： 本程序已在第七实验室的mini IMU上完成测试
-Mini IMU AHRS 模块官方销售地址：Http://chiplab7.taobao.com
-功能：
-1.初始化各个传感器，
-2.运行姿态解算和高度测量
-3.将解算的姿态和各个传感器的输出上传到 MiniIMU AHRS 测试软件
-4.响应 PC发送的命令
-------------------------------------
-*/
+/* ------------------------------------------------------------
+main.c, miniAHRS Project
+
+Author: Yunfei
+Website: www.yfworld.com
+Version: V1.0
+
+Declaration: 
+This code is modified from lisn3188 (www.chiplab7.com).
+-------------------------------------------------------------*/
 
 #include "common.h"  //包含所有的驱动 头文件
 

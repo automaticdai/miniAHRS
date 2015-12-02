@@ -1,7 +1,5 @@
-#ifndef __COMMON_H
-#define __COMMON_H
-
-#include "stm32f10x.h"
+#ifndef __DRIVERS_H
+#define __DRIVERS_H
 
 #include "LED.h"
 #include "UARTs.h"

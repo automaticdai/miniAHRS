@@ -1,7 +1,7 @@
 #ifndef __MPU6050_H
 #define __MPU6050_H
 
-#include "common.h"  //包含所有的驱动 头文件
+#include "drivers.h"  //包含所有的驱动 头文件
 
 #define devAddr  0xD0
 

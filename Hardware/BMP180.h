@@ -1,7 +1,7 @@
 #ifndef __BMP180_H
 #define __BMP180_H
 
-#include "common.h"  //包含所有的驱动 头文件
+#include "drivers.h"  //包含所有的驱动 头文件
 
 
 #define BMP180_ADDR                 0xEE     // default I2C address

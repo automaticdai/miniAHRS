@@ -9,8 +9,8 @@
 引出的API 子程序
 */
 
-void Write_config(void);  //写入配置
-void load_config(void);	  //读取配置
+void write_config(void);  //写入配置
+void read_config(void);	  //读取配置
 
 #endif /* __EEPROM_H */
 

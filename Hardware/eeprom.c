@@ -14,7 +14,7 @@
 
 struct data_map Config;	//配置信息
 
-void load_config(void){
+void read_config(void){
 	int16_t i;
 	int16_t *ptr = &Config.is_good;
 	int16_t *temp_addr = (int16_t *)PAGE_Config;
@@ -39,12 +39,12 @@ void load_config(void){
 		Config.dMy_scale =1.0f;
 		Config.dMz_scale =1.0f;
 	
-		Write_config();	 //将默认值写入flash
+		write_config();	 //将默认值写入flash
 	}
 }
 
 //将当前配置写入flash
-void Write_config(void){
+void write_config(void){
 	int16_t i;
 	int16_t *ptr = &Config.is_good;
 	uint32_t ptemp_addr = PAGE_Config;

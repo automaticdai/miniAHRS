@@ -292,7 +292,7 @@ void MPU6050_InitGyro_Offset(void)
 	Config.dGx_offset = Gx_offset = tempgx/100;//MPU6050_FIFO[3][10];
 	Config.dGy_offset = Gy_offset = tempgy/100;//MPU6050_FIFO[4][10];
 	Config.dGz_offset = Gz_offset = tempgz/100;//MPU6050_FIFO[5][10];
-	Write_config();
+	write_config();
 	tempax/=100;
 	tempay/=100;
 	tempaz/=100;

@@ -18,9 +18,6 @@ volatile float q0, q1, q2, q3; // 全局四元数
 volatile float integralFBhand,handdiff;
 volatile uint32_t lastUpdate, now; // 采样周期计数 单位 us
 
-
-void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
-
 /**************************实现函数********************************************
 *函数原型:		void Initial_Timer3(void)
 *功　　能:	  初始化Tim2  Tim3 将两个定时器级联，以产生一个32位的定时器来提供系统us 级的计时	
@@ -155,8 +152,8 @@ void IMU_getValues(float * values) {
 	int i;
 	//读取加速度和陀螺仪的当前ADC
     MPU6050_getMotion6(&accgyroval[0], &accgyroval[1], &accgyroval[2], &accgyroval[3], &accgyroval[4], &accgyroval[5]);
-    for(i = 0; i<6; i++) {
-      if(i < 3) {
+    for (i = 0; i < 6; i++) {
+      if (i < 3) {
         values[i] = (float) accgyroval[i];
       }
       else {
@@ -166,7 +163,6 @@ void IMU_getValues(float * values) {
     }
     HMC58X3_mgetValues(&values[6]);	//读取磁力计的ADC值
 }
-
 
 /**************************实现函数********************************************
 *函数原型:	   void IMU_AHRSupdate
@@ -295,16 +291,16 @@ if(ex != 0.0f && ey != 0.0f && ez != 0.0f){
 float mygetqval[9];	//用于存放传感器转换结果的数组
 void IMU_getQ(float * q) {
 
-  IMU_getValues(mygetqval);	 
-  //将陀螺仪的测量值转成弧度每秒
-  //加速度和磁力计保持 ADC值　不需要转换
-IMU_AHRSupdate(mygetqval[3] * M_PI/180, mygetqval[4] * M_PI/180, mygetqval[5] * M_PI/180,
-   mygetqval[0], mygetqval[1], mygetqval[2], mygetqval[6], mygetqval[7], mygetqval[8]);
+	IMU_getValues(mygetqval);	 
+	//将陀螺仪的测量值转成弧度每秒
+	//加速度和磁力计保持 ADC值　不需要转换
+	IMU_AHRSupdate(mygetqval[3] * M_PI/180, mygetqval[4] * M_PI/180, mygetqval[5] * M_PI/180,
+				mygetqval[0], mygetqval[1], mygetqval[2], mygetqval[6], mygetqval[7], mygetqval[8]);
 
-  q[0] = q0; //返回当前值
-  q[1] = q1;
-  q[2] = q2;
-  q[3] = q3;
+	q[0] = q0; //返回当前值
+	q[1] = q1;
+	q[2] = q2;
+	q[3] = q3;
 }
 
 

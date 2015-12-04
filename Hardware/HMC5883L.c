@@ -291,7 +291,7 @@ void HMC5883L_Save_Calib(void){
 	Config.dMx_scale = mx_scale;
 	Config.dMy_scale = my_scale;
 	Config.dMz_scale = mz_scale;
-	Write_config();
+	write_config();
 	HMC5883_calib=0; //½áÊø±ê¶¨
 
 }	//HMC5883L_Save_Calib()

@@ -13,14 +13,14 @@
 #include <math.h>
 
 // 气压计状态机
-#define SCTemperature  0x01
-#define CTemperatureing  0x02
-#define SCPressure  0x03
-#define SCPressureing  0x04
-#define Time_Limit 30000L  //每次转换的延时时间
-#define Time_tempC 6000L
+#define SCTemperature  		0x01
+#define CTemperatureing  	0x02
+#define SCPressure  		0x03
+#define SCPressureing  		0x04
+#define Time_Limit 			30000L  // 每次转换的延时时间
+#define Time_tempC 			6000L
 
-#define MOVAVG_SIZE   32  //保存最近的 MOVAVG_SIZE 个值 
+#define MOVAVG_SIZE   		32  	// 保存最近的 MOVAVG_SIZE 个值 
 
 volatile int16_t ac1,ac2,ac3,b1,b2,mb,mc,md;     // 标定的数据  
 volatile uint16_t ac4,ac5,ac6;                   // 标定的数据
@@ -34,10 +34,9 @@ int32_t _param_datum, _param_centimeters;
 volatile unsigned char BPM085_ST;
 int32_t last_Temperature,last_Pressure,last_Alt;
 
-//先进先出过滤器数组
-int32_t  test_buf[20];
-int32_t  Temp_buffer[MOVAVG_SIZE],Press_buffer[MOVAVG_SIZE],Alt_buffer[MOVAVG_SIZE];
-uint8_t temp_index=0,press_index=0,alt_index=0; //队列指针
+// 先进先出过滤器数组
+int32_t Temp_buffer[MOVAVG_SIZE], Press_buffer[MOVAVG_SIZE], Alt_buffer[MOVAVG_SIZE];
+uint8_t temp_index = 0, press_index = 0, alt_index = 0; //队列指针
 
 unsigned char BMP180_IS_Finish(void);
 void BMP180_writemem(uint8_t _addr, uint8_t _val);

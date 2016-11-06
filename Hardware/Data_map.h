@@ -1,7 +1,7 @@
 #ifndef __DATAMAP_H
 #define __DATAMAP_H
 
-#define  PAGE_Config    (0x08000000 + 62 * 1024) //将配置信息存放在第62页Flash
+#define  PAGE_Config    (0x08000000 + 62 * 1024) // 将配置信息存放在第62页Flash
 
 struct data_map{
 	int16_t is_good;   //数据是否有效

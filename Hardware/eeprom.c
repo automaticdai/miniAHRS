@@ -7,13 +7,14 @@
 测试： 本程序已在第七实验室的mini IMU上完成测试
 功能：
 将Flash用作EEPROM 用于保存偏置和标定数据
-------------------------------------
- */			  
+数据保存在'PAGE_Config'地址中。
+------------------------------------*/
 
 #include "eeprom.h"
 
 struct data_map Config;	//配置信息
 
+// 从flash中读取配置
 void read_config(void){
 	int16_t i;
 	int16_t *ptr = &Config.is_good;
@@ -43,7 +44,7 @@ void read_config(void){
 	}
 }
 
-//将当前配置写入flash
+// 将当前配置写入flash
 void write_config(void){
 	int16_t i;
 	int16_t *ptr = &Config.is_good;

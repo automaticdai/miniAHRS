@@ -461,7 +461,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Hardware</GroupName>
+          <GroupName>Drivers</GroupName>
           <Files>
             <File>
               <FileName>BMP180.c</FileName>

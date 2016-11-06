@@ -53,7 +53,7 @@ void IIC_Start(void)
 
 /**************************ÊµÏÖº¯Êı********************************************
 *º¯ÊıÔ­ĞÍ:		void IIC_Stop(void)
-*¹¦¡¡¡¡ÄÜ:	    // ²úÉúIICÍ£Ö¹ĞÅºÅ
+*¹¦¡¡¡¡ÄÜ:	    ²úÉúIICÍ£Ö¹ĞÅºÅ
 *******************************************************************************/	  
 void IIC_Stop(void)
 {
@@ -151,12 +151,12 @@ void IIC_Send_Byte(u8 txd)
 
 /**************************ÊµÏÖº¯Êı********************************************
 *º¯ÊıÔ­ĞÍ:		u8 IIC_Read_Byte(unsigned char ack)
-*¹¦¡¡¡¡ÄÜ:	    //¶Á1¸ö×Ö½Ú£¬ack=1Ê±£¬·¢ËÍACK£¬ack=0£¬·¢ËÍnACK 
+*¹¦¡¡¡¡ÄÜ:	    ¶Á1¸ö×Ö½Ú£¬ack=1Ê±£¬·¢ËÍACK£¬ack=0£¬·¢ËÍnACK 
 *******************************************************************************/  
 u8 IIC_Read_Byte(unsigned char ack)
 {
 	unsigned char i, receive = 0;
-	SDA_IN();¡		// SDAÉèÖÃÎªÊäÈë
+	SDA_IN();		// SDAÉèÖÃÎªÊäÈë
     for (i = 0; i < 8; i++)
 	{
         IIC_SCL = 0; 
@@ -167,9 +167,9 @@ u8 IIC_Read_Byte(unsigned char ack)
 		delay_us(2); 
     }					 
     if (ack)
-        IIC_Ack(); // ·¢ËÍACK 
+        IIC_Ack();  // ·¢ËÍACK 
     else
-        IIC_NAck();// ·¢ËÍnACK  
+        IIC_NAck(); // ·¢ËÍnACK  
     return receive;
 }
 
@@ -186,17 +186,17 @@ unsigned char I2C_ReadOneByte(unsigned char I2C_Addr,unsigned char addr)
 	unsigned char res=0;
 	
 	IIC_Start();	
-	IIC_Send_Byte(I2C_Addr);	   //·¢ËÍĞ´ÃüÁî
+	IIC_Send_Byte(I2C_Addr);	   		// ·¢ËÍĞ´ÃüÁî
 	res++;
 	IIC_Wait_Ack();
-	IIC_Send_Byte(addr); res++;  //·¢ËÍµØÖ·
+	IIC_Send_Byte(addr); res++;  		// ·¢ËÍµØÖ·
 	IIC_Wait_Ack();	  
 	//IIC_Stop();//²úÉúÒ»¸öÍ£Ö¹Ìõ¼ş	
 	IIC_Start();
-	IIC_Send_Byte(I2C_Addr+1); res++;          //½øÈë½ÓÊÕÄ£Ê½			   
+	IIC_Send_Byte(I2C_Addr+1); res++;   // ½øÈë½ÓÊÕÄ£Ê½			   
 	IIC_Wait_Ack();
 	res=IIC_Read_Byte(0);	   
-    IIC_Stop();//²úÉúÒ»¸öÍ£Ö¹Ìõ¼ş
+    IIC_Stop();							// ²úÉúÒ»¸öÍ£Ö¹Ìõ¼ş
 
 	return res;
 }
@@ -215,20 +215,20 @@ u8 IICreadBytes(u8 dev, u8 reg, u8 length, u8 *data){
     u8 count = 0;
 	
 	IIC_Start();
-	IIC_Send_Byte(dev);	   //·¢ËÍĞ´ÃüÁî
+	IIC_Send_Byte(dev);	   	// ·¢ËÍĞ´ÃüÁî
 	IIC_Wait_Ack();
-	IIC_Send_Byte(reg);   //·¢ËÍµØÖ·
+	IIC_Send_Byte(reg);   	// ·¢ËÍµØÖ·
     IIC_Wait_Ack();	  
 	IIC_Start();
-	IIC_Send_Byte(dev+1);  //½øÈë½ÓÊÕÄ£Ê½	
+	IIC_Send_Byte(dev+1);  	// ½øÈë½ÓÊÕÄ£Ê½	
 	IIC_Wait_Ack();
 	
-    for(count=0;count<length;count++){
-		 
-		 if(count!=length-1)data[count]=IIC_Read_Byte(1);  //´øACKµÄ¶ÁÊı¾İ
-		 	else  data[count]=IIC_Read_Byte(0);	 //×îºóÒ»¸ö×Ö½ÚNACK
+    for (count = 0; count < length - 1; count++) {
+		data[count] = IIC_Read_Byte(1);  // ´øACKµÄ¶ÁÊı¾İ
 	}
-    IIC_Stop();//²úÉúÒ»¸öÍ£Ö¹Ìõ¼ş
+	data[count] = IIC_Read_Byte(0);	 	// ×îºóÒ»¸ö×Ö½ÚNACK
+    IIC_Stop();							// ²úÉúÒ»¸öÍ£Ö¹Ìõ¼ş
+	
     return count;
 }
 
@@ -246,17 +246,17 @@ u8 IICwriteBytes(u8 dev, u8 reg, u8 length, u8* data){
   
  	u8 count = 0;
 	IIC_Start();
-	IIC_Send_Byte(dev);	   //·¢ËÍĞ´ÃüÁî
+	IIC_Send_Byte(dev);	   	// ·¢ËÍĞ´ÃüÁî
 	IIC_Wait_Ack();
-	IIC_Send_Byte(reg);   //·¢ËÍµØÖ·
+	IIC_Send_Byte(reg);   	// ·¢ËÍµØÖ·
     IIC_Wait_Ack();	  
-	for(count=0;count<length;count++){
+	for (count = 0; count < length; count++) {
 		IIC_Send_Byte(data[count]); 
 		IIC_Wait_Ack(); 
-	 }
-	IIC_Stop();//²úÉúÒ»¸öÍ£Ö¹Ìõ¼ş
+	}
+	IIC_Stop();				// ²úÉúÒ»¸öÍ£Ö¹Ìõ¼ş
 
-    return 1; //status == 0;
+    return 1; 				//status == 0;
 }
 
 
@@ -269,7 +269,7 @@ u8 IICwriteBytes(u8 dev, u8 reg, u8 length, u8* data){
 ·µ»Ø   1
 *******************************************************************************/ 
 u8 IICreadByte(u8 dev, u8 reg, u8 *data){
-	*data=I2C_ReadOneByte(dev, reg);
+	*data = I2C_ReadOneByte(dev, reg);
     return 1;
 }
 

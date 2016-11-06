@@ -17,7 +17,7 @@ This code is modified from lisn3188 (www.chiplab7.com).
 #define REMOV  0x02	//上传传感器的输出
 #define REHMC  0x03	//上传磁力计的标定值
 
-#define UPLOAD_RATE  	(10)   						// upload rate (hz)
+#define UPLOAD_RATE  	(30)   						// upload rate (hz)
 #define upload_time 	(1000000UL/UPLOAD_RATE)/2  	// upload interval (us)
 
 int16_t ax, ay, az;	
@@ -50,7 +50,7 @@ int main(void)
 {
 	int16_t Math_hz = 0;
 	unsigned char ucPC_cmd; 	// PC 命令关键字节	 
-	float ypr[3]; 			// yaw pitch roll
+	float ypr[3]; 						// yaw pitch roll
 	
 	system_init();
 	system_micrsecond = micros();
@@ -67,11 +67,11 @@ int main(void)
 			switch(state){ 
 				case REIMU:
 					BMP180_getTemperat(&Temperature); 	// 读取最近的温度值
-					BMP180_getPress(&Pressure);	   		// 读取最近的气压测量值
-					BMP180_getAlt(&Altitude);	   		// 读取相对高度
+					BMP180_getPress(&Pressure);	   			// 读取最近的气压测量值
+					BMP180_getAlt(&Altitude);	   				// 读取相对高度
 					UART2_ReportIMU((int16_t)(ypr[0]*10.0),(int16_t)(ypr[1]*10.0),
 									(int16_t)(ypr[2]*10.0),Altitude/10,Temperature,Pressure/10,Math_hz*UPLOAD_RATE);
-					Math_hz=0;
+					Math_hz = 0;
 					state = REMOV; //更改状态。
 					break;
 				case REMOV:
@@ -89,11 +89,11 @@ int main(void)
 					state = REIMU;
 					break;
 			}// end of switch(state) 			 
-			system_micrsecond = micros();	 	// 取系统时间 单位 us 
-			LED_Change();						// LED1改变亮度
+			system_micrsecond = micros();	 	// 取系统时间 单位: us 
+			LED_Change();										// LED1改变亮度
 		}
 	//--------------------------------------------------
-		//处理PC发送来的命令
+		// 处理PC发送来的命令
 		if((ucPC_cmd = UART2_CommandRoute()) != 0xff) {
 			switch(ucPC_cmd){ // 检查命令标识
 				case Gyro_init:			// 读取陀螺仪零偏

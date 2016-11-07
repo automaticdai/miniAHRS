@@ -12,6 +12,8 @@ This code is modified from lisn3188 (www.chiplab7.com).
 #include "stm32f10x.h"
 #include "drivers.h" 
 
+// test
+
 // PC communication state machine
 #define REIMU  0x01 //上传解算的姿态数据
 #define REMOV  0x02	//上传传感器的输出

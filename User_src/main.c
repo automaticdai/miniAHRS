@@ -50,19 +50,19 @@ int main(void)
 {
 	int16_t Math_hz = 0;
 	unsigned char ucPC_cmd; 	// PC 命令关键字节	 
-	float ypr[3]; 						// yaw pitch roll
+	float ypr[3]; 				// yaw pitch roll
 	
 	system_init();
 	system_micrsecond = micros();
 	
 	while(1) {
 		
-		IMU_getYawPitchRoll(ypr); //姿态更新
-		Math_hz++; //解算次数 ++
-		BMP180_Routing(); //处理BMP018 事务 开启转换和读取结果将在这个子程序中进行 
+		IMU_getYawPitchRoll(ypr); 	// 姿态更新
+		Math_hz++; 					// 解算次数++
+		BMP180_Routing(); 			// 处理BMP018事务, 开启转换和读取结果将在这个子程序中进行 
 
 	//-------------上位机------------------------------
-		//是否到了更新 上位机的时间了？
+		// 是否到了更新 上位机的时间了？
 		if((micros() - system_micrsecond) > upload_time) {
 			switch(state){ 
 				case REIMU:

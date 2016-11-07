@@ -12,12 +12,13 @@ This code is modified from lisn3188 (www.chiplab7.com).
 #include "stm32f10x.h"
 #include "drivers.h" 
 
-// test
-
 // PC communication state machine
-#define REIMU  0x01 //上传解算的姿态数据
-#define REMOV  0x02	//上传传感器的输出
-#define REHMC  0x03	//上传磁力计的标定值
+typedef enum _COMM_STATE {
+	REIMU = 0x01,			//上传解算的姿态数据
+	REMOV = 0x02,			//上传传感器的输出
+	REHMC = 0x03			//上传磁力计的标定值
+}COMM_STATE;
+
 
 #define UPLOAD_RATE  	(30)   						// upload rate (hz)
 #define upload_time 	(1000000UL/UPLOAD_RATE)/2  	// upload interval (us)
@@ -28,7 +29,7 @@ int16_t hx, hy, hz;
 int32_t Temperature = 0, Pressure = 0, Altitude = 0;
 uint32_t system_micrsecond;
 int16_t hmcvalue[3];
-u8 state = REIMU;  //发送特定帧 的状态机
+COMM_STATE state = REIMU;  //发送特定帧 的状态机
 
 void system_init(void) {
 	/* System Clock = 72M, 8MHz external osc + PLL */      

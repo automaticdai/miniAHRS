@@ -5,34 +5,34 @@ Author: Yunfei
 Website: www.yfworld.com
 Version: V1.0
 
-Declaration: 
+Declaration:
 This code is modified from lisn3188 (www.chiplab7.com).
 -------------------------------------------------------------*/
 
 #include "stm32f10x.h"
-#include "drivers.h" 
+#include "drivers.h"
 
 // PC communication state machine
 typedef enum _COMM_STATE {
-	REIMU = 0x01,			//ÉÏ´«½âËãµÄ×ËÌ¬Êı¾İ
-	REMOV = 0x02,			//ÉÏ´«´«¸ĞÆ÷µÄÊä³ö
-	REHMC = 0x03			//ÉÏ´«´ÅÁ¦¼ÆµÄ±ê¶¨Öµ
+	REIMU = 0x01,			//ä¸Šä¼ è§£ç®—çš„å§¿æ€æ•°æ®
+	REMOV = 0x02,			//ä¸Šä¼ ä¼ æ„Ÿå™¨çš„è¾“å‡º
+	REHMC = 0x03			//ä¸Šä¼ ç£åŠ›è®¡çš„æ ‡å®šå€¼
 }COMM_STATE;
 
 
 #define UPLOAD_RATE  	(30)   						// upload rate (hz)
 #define upload_time 	(1000000UL/UPLOAD_RATE)/2  	// upload interval (us)
 
-int16_t ax, ay, az;	
+int16_t ax, ay, az;
 int16_t gx, gy, gz;
 int16_t hx, hy, hz;
 int32_t Temperature = 0, Pressure = 0, Altitude = 0;
 uint32_t system_micrsecond;
 int16_t hmcvalue[3];
-COMM_STATE state = REIMU;  //·¢ËÍÌØ¶¨Ö¡ µÄ×´Ì¬»ú
+COMM_STATE state = REIMU;  //å‘é€ç‰¹å®šå¸§ çš„çŠ¶æ€æœº
 
 void system_init(void) {
-	/* System Clock = 72M, 8MHz external osc + PLL */      
+	/* System Clock = 72M, 8MHz external osc + PLL */
     //SystemInit();
 	delay_init(72);		// init delay function
 	Initial_LED_GPIO();	// init led
@@ -40,42 +40,42 @@ void system_init(void) {
 	Initial_UART1(115200L);
 	Initial_UART2(115200L);
 	read_config();  	// read configs from Flash --> eeprom.c
-	IIC_Init();	 		// ³õÊ¼»¯I2C½Ó¿Ú
-	delay_ms(300);		// µÈ´ıÆ÷¼şÉÏµç
-	IMU_init(); 		// ³õÊ¼»¯IMUºÍ´«¸ĞÆ÷
+	IIC_Init();	 		// åˆå§‹åŒ–I2Cæ¥å£
+	delay_ms(300);		// ç­‰å¾…å™¨ä»¶ä¸Šç”µ
+	IMU_init(); 		// åˆå§‹åŒ–IMUå’Œä¼ æ„Ÿå™¨
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		int main(void)
-*¹¦¡¡¡¡ÄÜ:		Ö÷³ÌĞò
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		int main(void)
+*åŠŸã€€ã€€èƒ½:		ä¸»ç¨‹åº
 *******************************************************************************/
 int main(void)
 {
 	int16_t Math_hz = 0;
-	unsigned char ucPC_cmd; 	// PC ÃüÁî¹Ø¼ü×Ö½Ú	 
+	unsigned char ucPC_cmd; 	// PC å‘½ä»¤å…³é”®å­—èŠ‚
 	float ypr[3]; 				// yaw pitch roll
-	
+
 	system_init();
 	system_micrsecond = micros();
-	
-	while(1) {
-		
-		IMU_getYawPitchRoll(ypr); 	// ×ËÌ¬¸üĞÂ
-		Math_hz++; 					// ½âËã´ÎÊı++
-		BMP180_Routing(); 			// ´¦ÀíBMP018ÊÂÎñ, ¿ªÆô×ª»»ºÍ¶ÁÈ¡½á¹û½«ÔÚÕâ¸ö×Ó³ÌĞòÖĞ½øĞĞ 
 
-	//-------------ÉÏÎ»»ú------------------------------
-		// ÊÇ·ñµ½ÁË¸üĞÂ ÉÏÎ»»úµÄÊ±¼äÁË£¿
+	while(1) {
+
+		IMU_getYawPitchRoll(ypr); 	// å§¿æ€æ›´æ–°
+		Math_hz++; 					// è§£ç®—æ¬¡æ•°++
+		BMP180_Routing(); 			// å¤„ç†BMP018äº‹åŠ¡, å¼€å¯è½¬æ¢å’Œè¯»å–ç»“æœå°†åœ¨è¿™ä¸ªå­ç¨‹åºä¸­è¿›è¡Œ
+
+	//-------------ä¸Šä½æœº------------------------------
+		// æ˜¯å¦åˆ°äº†æ›´æ–° ä¸Šä½æœºçš„æ—¶é—´äº†ï¼Ÿ
 		if((micros() - system_micrsecond) > upload_time) {
-			switch(state){ 
+			switch(state){
 				case REIMU:
-					BMP180_getTemperat(&Temperature); 	// ¶ÁÈ¡×î½üµÄÎÂ¶ÈÖµ
-					BMP180_getPress(&Pressure);	   			// ¶ÁÈ¡×î½üµÄÆøÑ¹²âÁ¿Öµ
-					BMP180_getAlt(&Altitude);	   				// ¶ÁÈ¡Ïà¶Ô¸ß¶È
+					BMP180_getTemperat(&Temperature); 	// è¯»å–æœ€è¿‘çš„æ¸©åº¦å€¼
+					BMP180_getPress(&Pressure);	   			// è¯»å–æœ€è¿‘çš„æ°”å‹æµ‹é‡å€¼
+					BMP180_getAlt(&Altitude);	   				// è¯»å–ç›¸å¯¹é«˜åº¦
 					UART2_ReportIMU((int16_t)(ypr[0]*10.0),(int16_t)(ypr[1]*10.0),
 									(int16_t)(ypr[2]*10.0),Altitude/10,Temperature,Pressure/10,Math_hz*UPLOAD_RATE);
 					Math_hz = 0;
-					state = REMOV; //¸ü¸Ä×´Ì¬¡£
+					state = REMOV; //æ›´æ”¹çŠ¶æ€ã€‚
 					break;
 				case REMOV:
 					MPU6050_getlastMotion6(&ax, &ay, &az, &gx, &gy, &gz);
@@ -83,39 +83,39 @@ int main(void)
 					UART2_ReportMotion(ax,ay,az,gx,gy,gz,hx,hy,hz);
 					state = REIMU;
 					if (HMC5883_calib) {
-						state = REHMC; // ĞèÒª·¢ËÍµ±Ç°´ÅÁ¦¼Æ±ê¶¨Öµ
-					} 						
+						state = REHMC; // éœ€è¦å‘é€å½“å‰ç£åŠ›è®¡æ ‡å®šå€¼
+					}
 					break;
-				default: 
+				default:
 					UART2_ReportHMC(HMC5883_maxx,HMC5883_maxy,HMC5883_maxz,
-									HMC5883_minx,HMC5883_miny,HMC5883_minz,0);// ·¢ËÍ±ê¶¨Öµ
+									HMC5883_minx,HMC5883_miny,HMC5883_minz,0);// å‘é€æ ‡å®šå€¼
 					state = REIMU;
 					break;
-			}// end of switch(state) 			 
-			system_micrsecond = micros();	 	// È¡ÏµÍ³Ê±¼ä µ¥Î»: us 
-			LED_Change();										// LED1¸Ä±äÁÁ¶È
+			}// end of switch(state)
+			system_micrsecond = micros();	 	// å–ç³»ç»Ÿæ—¶é—´ å•ä½: us
+			LED_Change();										// LED1æ”¹å˜äº®åº¦
 		}
 	//--------------------------------------------------
-		// ´¦ÀíPC·¢ËÍÀ´µÄÃüÁî
+		// å¤„ç†PCå‘é€æ¥çš„å‘½ä»¤
 		if((ucPC_cmd = UART2_CommandRoute()) != 0xff) {
-			switch(ucPC_cmd){ // ¼ì²éÃüÁî±êÊ¶
-				case Gyro_init:			// ¶ÁÈ¡ÍÓÂİÒÇÁãÆ«
-					MPU6050_InitGyro_Offset(); 
-					break; 	
-				case High_init:			// ÆøÑ¹¸ß¶È ÇåÁã	
-					BMP180_ResetAlt(0); 	
-					break;		
-				case HMC_calib_begin:	// ¿ªÊ¼´ÅÁ¦¼Æ±ê¶¨
-					HMC5883L_Start_Calib();	
-					break; 		
-				case HMC_calib:			// ±£´æ´ÅÁ¦¼Æ±ê¶¨		
-					HMC5883L_Save_Calib();	
-					break;   	
+			switch(ucPC_cmd){ // æ£€æŸ¥å‘½ä»¤æ ‡è¯†
+				case Gyro_init:			// è¯»å–é™€èºä»ªé›¶å
+					MPU6050_InitGyro_Offset();
+					break;
+				case High_init:			// æ°”å‹é«˜åº¦ æ¸…é›¶
+					BMP180_ResetAlt(0);
+					break;
+				case HMC_calib_begin:	// å¼€å§‹ç£åŠ›è®¡æ ‡å®š
+					HMC5883L_Start_Calib();
+					break;
+				case HMC_calib:			// ä¿å­˜ç£åŠ›è®¡æ ‡å®š
+					HMC5883L_Save_Calib();
+					break;
 			}
 		}// end if
 
 	}// end of while
 
-}  // end of main	
+}  // end of main
 
 //------------------End of File----------------------------

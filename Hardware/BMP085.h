@@ -12,11 +12,11 @@
         // when true, temperature is measured everytime pressure is measured (Auto).
         // when false, user chooses when to measure temperature (just call calcTrueTemperature()).
         // used for dynamic measurement to increase sample rate (see BMP085 modes below).
-       
+
 /* ---- Registers ---- */
 #define CAL_AC1           0xAA  // R   Calibration data (16 bits)
 #define CAL_AC2           0xAC  // R   Calibration data (16 bits)
-#define CAL_AC3           0xAE  // R   Calibration data (16 bits)    
+#define CAL_AC3           0xAE  // R   Calibration data (16 bits)
 #define CAL_AC4           0xB0  // R   Calibration data (16 bits)
 #define CAL_AC5           0xB2  // R   Calibration data (16 bits)
 #define CAL_AC6           0xB4  // R   Calibration data (16 bits)
@@ -25,7 +25,7 @@
 #define CAL_MB            0xBA  // R   Calibration data (16 bits)
 #define CAL_MC            0xBC  // R   Calibration data (16 bits)
 #define CAL_MD            0xBE  // R   Calibration data (16 bits)
-#define CONTROL           0xF4  // W   Control register 
+#define CONTROL           0xF4  // W   Control register
 #define CONTROL_OUTPUT    0xF6  // R   Output registers 0xF6=MSB, 0xF7=LSB, 0xF8=XLSB
 
 // unused registers
@@ -42,21 +42,21 @@
 #define MODE_STANDARD           1 //oversampling=1, internalsamples=2, maxconvtimepressure=7.5ms, avgcurrent=5uA, RMSnoise_hPA=0.05, RMSnoise_m=0.4
 #define MODE_HIGHRES            2 //oversampling=2, internalsamples=4, maxconvtimepressure=13.5ms, avgcurrent=7uA, RMSnoise_hPA=0.04, RMSnoise_m=0.3
 #define MODE_ULTRA_HIGHRES      3 //oversampling=3, internalsamples=8, maxconvtimepressure=25.5ms, avgcurrent=12uA, RMSnoise_hPA=0.03, RMSnoise_m=0.25
-                  
+
 // Control register
-#define READ_TEMPERATURE        0x2E 
-#define READ_PRESSURE           0x34 
+#define READ_TEMPERATURE        0x2E
+#define READ_PRESSURE           0x34
 //Other
 #define MSLP                    101325          // Mean Sea Level Pressure = 1013.25 hPA (1hPa = 100Pa = 1mbar)
 
 
-//ÒÔÏÂ³ÌĞòÎªBMP085Çı¶¯¹©Íâ²¿µ÷ÓÃµÄAPI
-void BMP085_init(void);	//³õÊ¼»¯BMP085
-void BMP085_getTemperat(int32_t *_Temperature);	//Temp(0.1C):  ¶ÁÈ¡ÎÂ¶È
-void BMP085_getPress(int32_t *_TruePressure);  //Pressure(Pa) ¶ÁÈ¡ÆøÑ¹Öµ
-void BMP085_getAlt(int32_t *_centimeters); //Alt(cm) ¶ÁÈ¡¸ß¶È
-void BMP085_Routing(void);	  //Õâ¸ö³ÌĞòĞèÒªÓÃ»§¶¨Ê±µ÷ÓÃ£¬ÒÔ¸üĞÂµ±Ç°ÎÂ¶ÈºÍÆøÑ¹Öµ 
-void BMP085_ResetAlt(int32_t _centimeters);	//¸´Î»ÆøÑ¹¸ß¶È¡£°Ñµ±Ç°µÄ¸ß¶ÈÉèÖÃ³É 0Ã×
+//ä»¥ä¸‹ç¨‹åºä¸ºBMP085é©±åŠ¨ä¾›å¤–éƒ¨è°ƒç”¨çš„API
+void BMP085_init(void);	//åˆå§‹åŒ–BMP085
+void BMP085_getTemperat(int32_t *_Temperature);	//Temp(0.1C):  è¯»å–æ¸©åº¦
+void BMP085_getPress(int32_t *_TruePressure);  //Pressure(Pa) è¯»å–æ°”å‹å€¼
+void BMP085_getAlt(int32_t *_centimeters); //Alt(cm) è¯»å–é«˜åº¦
+void BMP085_Routing(void);	  //è¿™ä¸ªç¨‹åºéœ€è¦ç”¨æˆ·å®šæ—¶è°ƒç”¨ï¼Œä»¥æ›´æ–°å½“å‰æ¸©åº¦å’Œæ°”å‹å€¼
+void BMP085_ResetAlt(int32_t _centimeters);	//å¤ä½æ°”å‹é«˜åº¦ã€‚æŠŠå½“å‰çš„é«˜åº¦è®¾ç½®æˆ 0ç±³
 
 #endif
 

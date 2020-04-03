@@ -1,17 +1,17 @@
 #ifndef __BMP180_H
 #define __BMP180_H
 
-#include "drivers.h"  //°üº¬ËùÓĞµÄÇı¶¯ Í·ÎÄ¼ş
+#include "drivers.h"  //åŒ…å«æ‰€æœ‰çš„é©±åŠ¨ å¤´æ–‡ä»¶
 
 
 #define BMP180_ADDR                 0xEE     // default I2C address
-#define BUFFER_SIZE                 3	  
+#define BUFFER_SIZE                 3
 
 
 /* ---- Registers ---- */
 #define CAL_AC1           0xAA  // R   Calibration data (16 bits)
 #define CAL_AC2           0xAC  // R   Calibration data (16 bits)
-#define CAL_AC3           0xAE  // R   Calibration data (16 bits)    
+#define CAL_AC3           0xAE  // R   Calibration data (16 bits)
 #define CAL_AC4           0xB0  // R   Calibration data (16 bits)
 #define CAL_AC5           0xB2  // R   Calibration data (16 bits)
 #define CAL_AC6           0xB4  // R   Calibration data (16 bits)
@@ -20,7 +20,7 @@
 #define CAL_MB            0xBA  // R   Calibration data (16 bits)
 #define CAL_MC            0xBC  // R   Calibration data (16 bits)
 #define CAL_MD            0xBE  // R   Calibration data (16 bits)
-#define CONTROL           0xF4  // W   Control register 
+#define CONTROL           0xF4  // W   Control register
 #define CONTROL_OUTPUT    0xF6  // R   Output registers 0xF6=MSB, 0xF7=LSB, 0xF8=XLSB
 
 // unused registers
@@ -37,21 +37,21 @@
 #define MODE_STANDARD           1 //oversampling=1, internalsamples=2, maxconvtimepressure=7.5ms, avgcurrent=5uA, RMSnoise_hPA=0.05, RMSnoise_m=0.4
 #define MODE_HIGHRES            2 //oversampling=2, internalsamples=4, maxconvtimepressure=13.5ms, avgcurrent=7uA, RMSnoise_hPA=0.04, RMSnoise_m=0.3
 #define MODE_ULTRA_HIGHRES      3 //oversampling=3, internalsamples=8, maxconvtimepressure=25.5ms, avgcurrent=12uA, RMSnoise_hPA=0.03, RMSnoise_m=0.25
-                  
+
 // Control register
-#define READ_TEMPERATURE        0x2E 
-#define READ_PRESSURE           0x34 
+#define READ_TEMPERATURE        0x2E
+#define READ_PRESSURE           0x34
 //Other
 #define MSLP                    101325          // Mean Sea Level Pressure = 1013.25 hPA (1hPa = 100Pa = 1mbar)
 
 
-//ÒÔÏÂ³ÌĞòÎªBMP180Çı¶¯¹©Íâ²¿µ÷ÓÃµÄAPI
-void BMP180_init(void);	//³õÊ¼»¯BMP180
-void BMP180_getTemperat(int32_t *_Temperature);	//Temp(0.1C):  ¶ÁÈ¡ÎÂ¶È
-void BMP180_getPress(int32_t *_TruePressure);  //Pressure(Pa) ¶ÁÈ¡ÆøÑ¹Öµ
-void BMP180_getAlt(int32_t *_centimeters); //Alt(cm) ¶ÁÈ¡¸ß¶È
-void BMP180_Routing(void);	  //Õâ¸ö³ÌĞòĞèÒªÓÃ»§¶¨Ê±µ÷ÓÃ£¬ÒÔ¸üĞÂµ±Ç°ÎÂ¶ÈºÍÆøÑ¹Öµ 
-void BMP180_ResetAlt(int32_t _centimeters);	//¸´Î»ÆøÑ¹¸ß¶È¡£°Ñµ±Ç°µÄ¸ß¶ÈÉèÖÃ³É 0Ã×
+//ä»¥ä¸‹ç¨‹åºä¸ºBMP180é©±åŠ¨ä¾›å¤–éƒ¨è°ƒç”¨çš„API
+void BMP180_init(void);	//åˆå§‹åŒ–BMP180
+void BMP180_getTemperat(int32_t *_Temperature);	//Temp(0.1C):  è¯»å–æ¸©åº¦
+void BMP180_getPress(int32_t *_TruePressure);  //Pressure(Pa) è¯»å–æ°”å‹å€¼
+void BMP180_getAlt(int32_t *_centimeters); //Alt(cm) è¯»å–é«˜åº¦
+void BMP180_Routing(void);	  //è¿™ä¸ªç¨‹åºéœ€è¦ç”¨æˆ·å®šæ—¶è°ƒç”¨ï¼Œä»¥æ›´æ–°å½“å‰æ¸©åº¦å’Œæ°”å‹å€¼
+void BMP180_ResetAlt(int32_t _centimeters);	//å¤ä½æ°”å‹é«˜åº¦ã€‚æŠŠå½“å‰çš„é«˜åº¦è®¾ç½®æˆ 0ç±³
 
 #endif
 

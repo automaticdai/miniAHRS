@@ -1,37 +1,37 @@
 /* BMP085.c file
-±àĞ´Õß£ºlisn3188
-ÍøÖ·£ºwww.chiplab7.com
-×÷ÕßE-mail£ºlisn3188@163.com
-±àÒë»·¾³£ºMDK-Lite  Version: 4.23
-³õ°æÊ±¼ä: 2012-04-25
-²âÊÔ£º ±¾³ÌĞòÒÑÔÚµÚÆßÊµÑéÊÒµÄmini IMUÉÏÍê³É²âÊÔ
-¹¦ÄÜ£º
-Ìá¹©BMP085 ³õÊ¼»¯ ¿ØÖÆ ¶ÁÈ¡ÎÂ¶È ÆøÑ¹ API
+ç¼–å†™è€…ï¼šlisn3188
+ç½‘å€ï¼šwww.chiplab7.com
+ä½œè€…E-mailï¼šlisn3188@163.com
+ç¼–è¯‘ç¯å¢ƒï¼šMDK-Lite  Version: 4.23
+åˆç‰ˆæ—¶é—´: 2012-04-25
+æµ‹è¯•ï¼š æœ¬ç¨‹åºå·²åœ¨ç¬¬ä¸ƒå®éªŒå®¤çš„mini IMUä¸Šå®Œæˆæµ‹è¯•
+åŠŸèƒ½ï¼š
+æä¾›BMP085 åˆå§‹åŒ– æ§åˆ¶ è¯»å–æ¸©åº¦ æ°”å‹ API
 ------------------------------------
  */
 #include "BMP085.h"
 #include <math.h>
 #include "UARTs.h"
 
-// ÆøÑ¹¼Æ×´Ì¬»ú
+// æ°”å‹è®¡çŠ¶æ€æœº
 #define SCTemperature  0x01
 #define CTemperatureing  0x02
 #define SCPressure  0x03
 #define SCPressureing  0x04
 
-volatile int16_t ac1,ac2,ac3,b1,b2,mb,mc,md;     // ±ê¶¨µÄÊı¾İ  
-volatile uint16_t ac4,ac5,ac6;                   // ±ê¶¨µÄÊı¾İ
-volatile int32_t b5;                    //ÎÂ¶È
-  
-uint8_t _buff[BUFFER_SIZE];    // Êı¾İ»º³åÇø
-int16_t _oss;                 // ¹ı²ÉÑùÉèÖÃ
-  
+volatile int16_t ac1,ac2,ac3,b1,b2,mb,mc,md;     // æ ‡å®šçš„æ•°æ®
+volatile uint16_t ac4,ac5,ac6;                   // æ ‡å®šçš„æ•°æ®
+volatile int32_t b5;                    //æ¸©åº¦
+
+uint8_t _buff[BUFFER_SIZE];    // æ•°æ®ç¼“å†²åŒº
+int16_t _oss;                 // è¿‡é‡‡æ ·è®¾ç½®
+
 int32_t _cm_Offset, _Pa_Offset;
 int32_t _param_datum, _param_centimeters;
 volatile unsigned char BPM085_ST;
 int32_t last_Temperature,last_Pressure,last_Alt;
-int32_t  BMP085_FIFO[2][11]; //ÏÈ½øÏÈ³ö¹ıÂËÆ÷Êı×é
-int32_t  BMP085_FIFOH[21];	 //ÏÈ½øÏÈ³ö¹ıÂËÆ÷Êı×é
+int32_t  BMP085_FIFO[2][11]; //å…ˆè¿›å…ˆå‡ºè¿‡æ»¤å™¨æ•°ç»„
+int32_t  BMP085_FIFOH[21];	 //å…ˆè¿›å…ˆå‡ºè¿‡æ»¤å™¨æ•°ç»„
 
 unsigned char BMP085_IS_Finish(void);
 void BMP085_writemem(uint8_t _addr, uint8_t _val);
@@ -40,9 +40,9 @@ void BMP085_getTemperature(int32_t *_Temperature,u8 rw);
 void BMP085_calcTruePressure(int32_t *_TruePressure,u8 writeread);
 void BMP085_getAltitude(int32_t *_centimeters,u8 rw);
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP085_newTemperature(int32_t T)
-*¹¦¡¡¡¡ÄÜ:		Ìí¼ÓÒ»¸öĞÂµÄÖµµ½ÎÂ¶È¹ıÂËÆ÷
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP085_newTemperature(int32_t T)
+*åŠŸã€€ã€€èƒ½:		æ·»åŠ ä¸€ä¸ªæ–°çš„å€¼åˆ°æ¸©åº¦è¿‡æ»¤å™¨
 *******************************************************************************/
 void BMP085_newTemperature(int32_t T)
 {
@@ -51,17 +51,17 @@ int32_t sum=0;
 for(i=1;i<10;i++){
 	BMP085_FIFO[0][i-1]=BMP085_FIFO[0][i];
 }
-BMP085_FIFO[0][9]=T; //½«ĞÂÖµ·ÅÖÃµ½Êı×éµÄÄ©Î²
+BMP085_FIFO[0][9]=T; //å°†æ–°å€¼æ”¾ç½®åˆ°æ•°ç»„çš„æœ«å°¾
 sum=0;
 for(i=0;i<10;i++){
-   sum+=BMP085_FIFO[0][i]; //ÀÛ¼Ó
+   sum+=BMP085_FIFO[0][i]; //ç´¯åŠ 
 }
-last_Temperature=BMP085_FIFO[0][10]=sum/10;	//È¡Æ½¾ùÖµ
+last_Temperature=BMP085_FIFO[0][10]=sum/10;	//å–å¹³å‡å€¼
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP085_newPressure(int32_t P)
-*¹¦¡¡¡¡ÄÜ:		Ìí¼ÓÒ»¸öĞÂµÄÖµµ½ÆøÑ¹¹ıÂËÆ÷
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP085_newPressure(int32_t P)
+*åŠŸã€€ã€€èƒ½:		æ·»åŠ ä¸€ä¸ªæ–°çš„å€¼åˆ°æ°”å‹è¿‡æ»¤å™¨
 *******************************************************************************/
 void BMP085_newPressure(int32_t P)
 {
@@ -78,9 +78,9 @@ for(i=0;i<10;i++){
 last_Pressure=BMP085_FIFO[1][10]=sum/10;
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP085_newALT(int32_t A)
-*¹¦¡¡¡¡ÄÜ:		Ìí¼ÓÒ»¸öĞÂµÄÖµµ½¸ß¶È¹ıÂËÆ÷
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP085_newALT(int32_t A)
+*åŠŸã€€ã€€èƒ½:		æ·»åŠ ä¸€ä¸ªæ–°çš„å€¼åˆ°é«˜åº¦è¿‡æ»¤å™¨
 *******************************************************************************/
 void BMP085_newALT(int32_t A)
 {
@@ -97,78 +97,78 @@ for(i=0;i<20;i++){
 last_Alt=BMP085_FIFOH[20]=sum/20;
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP085_getAlt(int32_t *_centimeters)
-*¹¦¡¡¡¡ÄÜ:		¶ÁÈ¡×îĞÂµÄ¸ß¶ÈÖµ£¬µ¥Î»Îª cm 
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP085_getAlt(int32_t *_centimeters)
+*åŠŸã€€ã€€èƒ½:		è¯»å–æœ€æ–°çš„é«˜åº¦å€¼ï¼Œå•ä½ä¸º cm
 *******************************************************************************/
 void BMP085_getAlt(int32_t *_centimeters)
 {
-	*_centimeters = last_Alt;	
+	*_centimeters = last_Alt;
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP085_getPress(int32_t *_TruePressure)
-*¹¦¡¡¡¡ÄÜ:		¶ÁÈ¡×îĞÂµÄÆøÑ¹Öµ£¬µ¥Î»Îª pa 
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP085_getPress(int32_t *_TruePressure)
+*åŠŸã€€ã€€èƒ½:		è¯»å–æœ€æ–°çš„æ°”å‹å€¼ï¼Œå•ä½ä¸º pa
 *******************************************************************************/
 void BMP085_getPress(int32_t *_TruePressure)
 {
 	*_TruePressure = last_Pressure;
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP085_getTemperat(int32_t *_Temperature)
-*¹¦¡¡¡¡ÄÜ:		¶ÁÈ¡×îĞÂµÄÎÂ¶ÈÖµ£¬µ¥Î»Îª 0.1C 
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP085_getTemperat(int32_t *_Temperature)
+*åŠŸã€€ã€€èƒ½:		è¯»å–æœ€æ–°çš„æ¸©åº¦å€¼ï¼Œå•ä½ä¸º 0.1C
 *******************************************************************************/
 void BMP085_getTemperat(int32_t *_Temperature)
 {
 	*_Temperature =	last_Temperature;
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP085_Routing(void)
-*¹¦¡¡¡¡ÄÜ:		BMP085 ÔËĞĞÊ±µ÷ÓÃµÄ³ÌĞò¡£
-				¸Ã³ÌĞò»á²»Í£µØ¶ÁÈ¡ÆøÑ¹ÖµºÍÎÂ¶ÈÖµ£¬
-				ÓÃ»§ĞèÒª¶¨ÆÚµ÷ÓÃÕâ¸ö³ÌĞò£¬ÒÔ¸üĞÂ¸ß¶ÈºÍÎÂ¶ÈĞÅÏ¢
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP085_Routing(void)
+*åŠŸã€€ã€€èƒ½:		BMP085 è¿è¡Œæ—¶è°ƒç”¨çš„ç¨‹åºã€‚
+				è¯¥ç¨‹åºä¼šä¸åœåœ°è¯»å–æ°”å‹å€¼å’Œæ¸©åº¦å€¼ï¼Œ
+				ç”¨æˆ·éœ€è¦å®šæœŸè°ƒç”¨è¿™ä¸ªç¨‹åºï¼Œä»¥æ›´æ–°é«˜åº¦å’Œæ¸©åº¦ä¿¡æ¯
 *******************************************************************************/
 void BMP085_Routing(void)
 {
   switch(BPM085_ST){
-  case SCTemperature: 
-  				BMP085_writemem(CONTROL, READ_TEMPERATURE); 
+  case SCTemperature:
+  			BMP085_writemem(CONTROL, READ_TEMPERATURE);
 				BPM085_ST=CTemperatureing;
 				break;
-  case CTemperatureing: 
-  			 	if(BMP085_IS_Finish()){
+  case CTemperatureing:
+  			if(BMP085_IS_Finish()){
 				BMP085_calcTrueTemperature(0);
 				BMP085_getTemperature(&last_Temperature,0);
 				BMP085_newTemperature(last_Temperature);
 				BPM085_ST=SCPressure;
 				}
   				break;
-  case SCPressure:  
+  case SCPressure:
   				BMP085_writemem(CONTROL, READ_PRESSURE+(_oss << 6));
 				BPM085_ST=SCPressureing;
   				break;
-  case SCPressureing:  
+  case SCPressureing:
   				if(BMP085_IS_Finish()){
 				BMP085_getAltitude(&last_Alt,0);
 				BMP085_newALT(last_Alt);
 				BPM085_ST=SCTemperature;
 				}
   				break;
-  default :BPM085_ST=SCTemperature; break;
+  default: BPM085_ST=SCTemperature; break;
   }
 
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		unsigned char BMP085_IS_Finish(void)
-*¹¦¡¡¡¡ÄÜ:		¼ì²é BMP085  ÊÇ·ñÍê³ÉÁË×ª»»
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		unsigned char BMP085_IS_Finish(void)
+*åŠŸã€€ã€€èƒ½:		æ£€æŸ¥ BMP085  æ˜¯å¦å®Œæˆäº†è½¬æ¢
 *******************************************************************************/
 unsigned char BMP085_IS_Finish(void)
 {
  	if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_4)==Bit_SET){
-	  return 1;	 // finish 
+	  return 1;	 // finish
 	 }
 	 else return 0;	  //running
 }
@@ -181,9 +181,9 @@ void BMP085_readmem(uint8_t _addr, uint8_t _nbytes, uint8_t __buff[]) {
   IICreadBytes(BMP085_ADDR,_addr,_nbytes,__buff);
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP085_getCalData(void)
-*¹¦¡¡¡¡ÄÜ:		¶Áµ½ BMP085 ÄÚ²¿µÄ±ê¶¨ĞÅÏ¢
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP085_getCalData(void)
+*åŠŸã€€ã€€èƒ½:		è¯»åˆ° BMP085 å†…éƒ¨çš„æ ‡å®šä¿¡æ¯
 *******************************************************************************/
 void BMP085_getCalData(void) {
   BMP085_readmem(CAL_AC1, 2, _buff);
@@ -197,17 +197,17 @@ void BMP085_getCalData(void) {
   BMP085_readmem(CAL_AC5, 2, _buff);
   ac5 = ((uint16_t)_buff[0] <<8 | ((uint16_t)_buff[1]));
   BMP085_readmem(CAL_AC6, 2, _buff);
-  ac6 = ((uint16_t)_buff[0] <<8 | ((uint16_t)_buff[1])); 
+  ac6 = ((uint16_t)_buff[0] <<8 | ((uint16_t)_buff[1]));
   BMP085_readmem(CAL_B1, 2, _buff);
-  b1 = ((int16_t)_buff[0] <<8 | ((int16_t)_buff[1])); 
+  b1 = ((int16_t)_buff[0] <<8 | ((int16_t)_buff[1]));
   BMP085_readmem(CAL_B2, 2, _buff);
-  b2 = ((int16_t)_buff[0] <<8 | ((int16_t)_buff[1])); 
+  b2 = ((int16_t)_buff[0] <<8 | ((int16_t)_buff[1]));
   BMP085_readmem(CAL_MB, 2, _buff);
   mb = ((int16_t)_buff[0] <<8 | ((int16_t)_buff[1]));
   BMP085_readmem(CAL_MC, 2, _buff);
   mc = ((int16_t)_buff[0] <<8 | ((int16_t)_buff[1]));
   BMP085_readmem(CAL_MD, 2, _buff);
-  md = ((int16_t)_buff[0] <<8 | ((int16_t)_buff[1])); 
+  md = ((int16_t)_buff[0] <<8 | ((int16_t)_buff[1]));
 }
 
 void BMP085_calcTrueTemperature(u8 rw){
@@ -216,9 +216,9 @@ void BMP085_calcTrueTemperature(u8 rw){
   BMP085_writemem(CONTROL, READ_TEMPERATURE);
   delay_ms(10);                          // min. 4.5ms read Temp delay
   }
-  BMP085_readmem(CONTROL_OUTPUT, 2, _buff); 
+  BMP085_readmem(CONTROL_OUTPUT, 2, _buff);
   ut = ((int32_t)_buff[0] << 8 | ((int32_t)_buff[1]));    // uncompensated temperature value
- 
+
   // calculate temperature
   x1 = (((int32_t)ut - (int32_t)ac6) * (int32_t)ac5) >> 15;
   mctemp= mc;
@@ -234,21 +234,21 @@ void BMP085_setMode(u8 _BMPMode){
 void BMP085_calcTruePressure(int32_t *_TruePressure,u8 writeread) {
   volatile int32_t up,x1,x2,x3,b3,b6,p;
   volatile int32_t b4,b7;
-  volatile int32_t tmp; 
+  volatile int32_t tmp;
 
  //read Raw Pressure
  if(writeread){
 
   #if AUTO_UPDATE_TEMPERATURE
-  BMP085_calcTrueTemperature(writeread);        // b5 update 
-  #endif 
+  BMP085_calcTrueTemperature(writeread);        // b5 update
+  #endif
   BMP085_writemem(CONTROL, READ_PRESSURE+(_oss << 6));
-  delay_ms(30); 
+  delay_ms(30);
   }
-     
-  BMP085_readmem(CONTROL_OUTPUT, 3, _buff);  
+
+  BMP085_readmem(CONTROL_OUTPUT, 3, _buff);
   up = ((((int32_t)_buff[0] <<16) | ((int32_t)_buff[1] <<8) | ((int32_t)_buff[2])) >> (8-_oss)); // uncompensated pressure value
-  
+
   // calculate true pressure
   b6 = b5 - 4000;             // b5 is updated by calcTrueTemperature().
   x1 = (b2* ((b6 * b6) >> 12)) >> 11;
@@ -275,61 +275,61 @@ void BMP085_calcTruePressure(int32_t *_TruePressure,u8 writeread) {
 
 }
 
-void BMP085_getPressure(int32_t *_Pa,u8 wr){   
+void BMP085_getPressure(int32_t *_Pa,u8 wr){
   int32_t TruePressure;
-  BMP085_calcTruePressure(&TruePressure,wr); 
+  BMP085_calcTruePressure(&TruePressure,wr);
   //TruePressure;
   *_Pa = TruePressure / pow((1 - (float)_param_centimeters / 4433000), 5.255) + _Pa_Offset;
-  // converting from float to int32_t truncates toward zero, 1010.999985 becomes 1010 resulting in 1 Pa error (max).  
-  // Note that BMP085 abs accuracy from 700...1100hPa and 0..+65ºC is +-100Pa (typ.)
+  // converting from float to int32_t truncates toward zero, 1010.999985 becomes 1010 resulting in 1 Pa error (max).
+  // Note that BMP085 abs accuracy from 700...1100hPa and 0..+65ç¯Š is +-100Pa (typ.)
 }
 
-void BMP085_setLocalAbsAlt(int32_t _centimeters){  
+void BMP085_setLocalAbsAlt(int32_t _centimeters){
   int32_t tmp_Pa;
- 
-  _param_centimeters = _centimeters;   
+
+  _param_centimeters = _centimeters;
   BMP085_getPressure(&tmp_Pa,1);    // calc pressure based on current altitude
   _param_datum = tmp_Pa;
 }
 
-void BMP085_ResetAlt(int32_t _centimeters){  
+void BMP085_ResetAlt(int32_t _centimeters){
   int32_t tmp_Pa;
- 
-  _param_centimeters = _centimeters;   
+
+  _param_centimeters = _centimeters;
   BMP085_getPress(&tmp_Pa);    // calc pressure based on current altitude
   _param_datum = tmp_Pa;
 }
 
 void BMP085_getAltitude(int32_t *_centimeters,u8 rw){
   int32_t TruePressure;
-  BMP085_calcTruePressure(&TruePressure,rw); 
+  BMP085_calcTruePressure(&TruePressure,rw);
   BMP085_newPressure(TruePressure);
    TruePressure = last_Pressure;
-  *_centimeters =  4433000 * (1 - pow((TruePressure / (float)_param_datum), 0.1903)) + _cm_Offset;  
+  *_centimeters =  4433000 * (1 - pow((TruePressure / (float)_param_datum), 0.1903)) + _cm_Offset;
   // converting from float to int32_t truncates toward zero, 100.999985 becomes 100 resulting in 1 cm error (max).
 }
 
-void BMP085_setLocalPressure(int32_t _Pa){   
+void BMP085_setLocalPressure(int32_t _Pa){
   int32_t tmp_alt;
- 
-  _param_datum = _Pa;   
-  BMP085_getAltitude(&tmp_alt,1);    // calc altitude based on current pressure   
+
+  _param_datum = _Pa;
+  BMP085_getAltitude(&tmp_alt,1);    // calc altitude based on current pressure
   _param_centimeters = tmp_alt;
 }
 
-void BMP_init(u8 _BMPMode, int32_t _initVal, u8 _Unitmeters){     
+void BMP_init(u8 _BMPMode, int32_t _initVal, u8 _Unitmeters){
   BMP085_getCalData();               // initialize cal data
   BMP085_calcTrueTemperature(1);      // initialize b5
   BMP085_setMode(_BMPMode);
-  _Unitmeters>0 ? BMP085_setLocalAbsAlt(_initVal) : BMP085_setLocalPressure(_initVal); 
+  _Unitmeters>0 ? BMP085_setLocalAbsAlt(_initVal) : BMP085_setLocalPressure(_initVal);
 }
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP085_init(void)
-*¹¦¡¡¡¡ÄÜ:		¹©Íâ²¿µ÷ÓÃµÄ³õÊ¼»¯³ÌĞò
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP085_init(void)
+*åŠŸã€€ã€€èƒ½:		ä¾›å¤–éƒ¨è°ƒç”¨çš„åˆå§‹åŒ–ç¨‹åº
 *******************************************************************************/
-void BMP085_init(void) {  
+void BMP085_init(void) {
   _cm_Offset = 0;
-  _Pa_Offset = 0;               // 1hPa = 100Pa = 1mbar	
+  _Pa_Offset = 0;               // 1hPa = 100Pa = 1mbar
   BMP_init(MODE_ULTRA_HIGHRES, 0, 1);
 }
 
